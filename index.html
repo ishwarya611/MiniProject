@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>Waitopia</title>
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: 'Fredoka One', cursive;
+            background-color: #000000;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* 3D Cube Animation */
+        .cube {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 5s infinite linear;
+        }
+
+        .cube div {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #ff0000;
+            opacity: 0.9;
+            border-radius: 8px;
+        }
+
+        .cube .front {
+            transform: translateZ(50px);
+            background-color: #ff0000;
+        }
+        .cube .back {
+            transform: rotateY(180deg) translateZ(50px);
+            background-color: #ff4d4d;
+        }
+        .cube .left {
+            transform: rotateY(-90deg) translateZ(50px);
+            background-color: #ff1a1a;
+        }
+        .cube .right {
+            transform: rotateY(90deg) translateZ(50px);
+            background-color: #ff6666;
+        }
+        .cube .top {
+            transform: rotateX(90deg) translateZ(50px);
+            background-color: #ff9999;
+        }
+        .cube .bottom {
+            transform: rotateX(-90deg) translateZ(50px);
+            background-color: #ffcccc;
+        }
+
+        @keyframes rotateCube {
+            0% {
+                transform: rotateX(0) rotateY(0);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        /* Light Effect */
+        .light {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(20, 20, 20, 0) 0%,
+                rgba(20, 20, 20, 0.4) 15%,
+                rgba(20, 20, 20, 0.6) 18%,
+                rgba(20, 20, 20, 0.9) 25%,
+                rgba(20, 20, 20, 1) 35%,
+                rgba(20, 20, 20, 1) 100%
+            );
+            z-index: 100;
+            pointer-events: none;
+            transition: background 0.1s ease;
+        }
+
+        /* Toggle Button Styles */
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 101;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background-color: #cc0000;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #000000;
+            color: #ff0000;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        header p {
+            font-size: 2.5em;
+            margin-top: 10px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #222;
+            padding: 15px 0;
+            width: 100%;
+        }
+
+        nav a {
+            color: #ff0000;
+            text-decoration: none;
+            padding: 15px 20px;
+            transition: background-color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        nav a:hover {
+            background-color: #ff0000;
+            color: black;
+        }
+
+        /* Sections */
+        section {
+            padding: 50px;
+            max-width: 1200px;
+            margin: 30px 0;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            color: #ff0000; /* Change color to red for <h2> */
+            font-size: 2em;
+        }
+
+        /* List Styles */
+        ul {
+            padding: 0;
+            margin: 20px 0;
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 15px; /* Add space between list items */
+        }
+
+        /* Image Styling for Hover Effect */
+        img {
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+        }
+
+        img:hover {
+            transform: scale(1.1); /* Pop-up effect */
+            box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.7); /* Red glow effect */
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000000;
+            color: #ff0000;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        p,a {
+            font-size: 20px;
+        }
+
+        ul li {
+            font-size: 1.2em; /* Increase font size */
+            margin-bottom: 15px;
+        }
+        /* Particle canvas styles */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind other content */
+        }
+        /* Custom cursor: a white circle (64px diameter), hidden by default */
+        #customCursor {
+            position: fixed;
+            pointer-events: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: white;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            display: none;
+        }
+        :root {
+            /* Change this value to control the text's initial height */
+            --text-font-size: 20vw;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="cube">
+            <div class="front"></div>
+            <div class="back"></div>
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="top"></div>
+            <div class="bottom"></div>
+        </div>
+    </div>
+
+    <div class="light"></div>
+
+    <button id="toggle-light" class="toggle-button">Toggle Light Effect</button>
+
+    <header>
+        <h1>WAITOPIA</h1>
+        <p>No More Boring Waits</p>
+    </header>
+
+    <nav>
+        <a href="#about">About Us</a>
+        <a href="#trends">Trends</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#services">Services</a>
+        <a href="#collections">Collections</a>
+        <a href="#faqs">FAQs</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>At WAITOPIA, we believe that waiting should be as fun as the destination. Gone are the days of staring at a blank screen or a dull loading bar. We've transformed waiting time into an entertaining and delightful experience! Our mission? To make the seconds tick by with joy, humor, and a splash of creativity. We design the most hilarious, whimsical, and engaging loading pages that make waiting for content actually enjoyable.</p>
+        <p>Whether you're eagerly anticipating a new webpage, a game, or even an app, we're here to make the experience <em>way</em> more fun. Because why wait like it’s 1999 when you could wait like it’s 2099?</p>
+    </section>
+
+    <section id="trends">
+        <h2>Trends</h2>
+        <p><strong>The New Trend in Waiting: Fun, Not Frustration</strong></p>
+        <p>The world of web design is evolving, and so is the way we handle waiting. Forget static loading screens with just a spinning wheel. The latest trend? <em>Interactive</em>, <em>engaging</em>, and <em>funny</em> loading pages that make every second worth it.</p>
+        <ul>
+            <li><strong>Interactive Loading:</strong> From mini-games to clickable jokes, keep yourself entertained while the page loads.</li>
+            <li><strong>Humor and Playfulness:</strong> Let’s face it—who doesn’t love a good pun or a quirky character to break the monotony?</li>
+            <li><strong>Customizable Progress Bars:</strong> Make waiting feel like a game with progress bars that level up and earn points.</li>
+            <li><strong>Personalized Experiences:</strong> Loading pages that adapt based on the user’s behavior and preferences.</li>
+        </ul>
+    </section>
+
+    <section id="benefits">
+        <h2>Benefits</h2>
+        <p><strong>Why Wait With Us?</strong></p>
+        <ul>
+            <li><strong>Engagement:</strong> No more idle time! Our interactive loading screens keep users engaged with mini-games, jokes, and witty visuals.</li>
+            <li><strong>Fun:</strong> We bring humor into the mix, making waiting a more enjoyable experience. It’s like your loading screen just got a sense of humor!</li>
+            <li><strong>Customizable:</strong> Tailor the waiting experience for your website, game, or app. Choose themes, humor styles, and animations to perfectly match your brand.</li>
+            <li><strong>User Retention:</strong> A positive loading experience means happier users who’ll stick around longer. No one likes waiting, but if it's entertaining, they won't mind as much!</li>
+            <li><strong>Better Brand Image:</strong> We make waiting fun and memorable, which leaves a lasting impression on your visitors and boosts brand loyalty.</li>
+        </ul>
+    </section>
+
+    <section id="services">
+        <h2>Services</h2>
+        <p><strong>Our Services: Turning Wait Time into Fun Time!</strong></p>
+        <ul>
+            <li><strong>Custom Loading Pages:</strong> We design unique and creative loading pages that reflect your brand's personality. From animations to interactive content, we do it all.</li>
+            <li><strong>Interactive Features:</strong> Our interactive loading screens keep users entertained. Whether it’s a quick mini-game, a fun fact, or an amusing character, we’ve got something for everyone.</li>
+            <li><strong>Custom Progress Bars:</strong> Progress bars don’t have to be boring! We offer a variety of customizable options, like animated bars, level-ups, and themed designs.</li>
+            <li><strong>Humor-Driven Content:</strong> Add some personality with funny quotes, playful animations, and quirky graphics that turn waiting into a delightful moment.</li>
+            <li><strong>Mobile Optimization:</strong> Our designs look great on any device! No matter the screen size, your loading page will be optimized for a flawless experience.</li>
+        </ul>
+    </section>
+
+    <section id="collections">
+        <h2>Collections</h2>
+        <p><strong>Our Collections: Wait. But Make It Fun.</strong></p>
+        <div>
+            <img src="tm.gif" alt="Collection Image 1" />
+            <img src="exp0.gif" alt="Collection Image 2" />
+            <img src="grad.gif" alt="Collection Image 3" />
+        </div>
+    </section>
+
+    <section id="faqs">
+        <h2>Frequently Asked Questions</h2>
+        <ul>
+            <li><strong>Q: How do I customize my loading page?</strong>  
+                <p>A: It’s super simple! Choose your style, animations, and content type from our templates or work with us to create a completely custom design tailored to your brand.</p></li>
+            <li><strong>Q: Can I add games to my loading pages?</strong>  
+                <p>A: Absolutely! You can choose from a range of mini-games to keep your users entertained while they wait. We offer options like memory games, catch-the-item challenges, and more!</p></li>
+            <li><strong>Q: Will this affect my website’s speed?</strong>  
+                <p>A: Not at all! Our loading pages are lightweight and optimized to ensure your website’s performance is smooth and fast.</p></li>
+            <li><strong>Q: Can I use this for my mobile app or game?</strong>  
+                <p>A: Of course! Our loading page designs are fully responsive and optimized for both websites and mobile apps.</p></li>
+            <li><strong>Q: What if I want something totally unique?</strong>  
+                <p>A: No problem! We love creating custom, one-of-a-kind loading experiences. Just reach out, and we’ll design something that’s as unique as your brand.</p></li>
+        </ul>
+    </section>
+
+    <section id="contact">
+        <h2>Get in Touch with WAITOPIA</h2>
+        <p>We’d love to hear from you! Whether you have questions, want to brainstorm ideas, or need help making your website’s wait time more fun, we’re here for it.</p>
+        <ul>
+            <li><strong>Email Us:</strong> hello@waitopia.com</li>
+            <li><strong>Call Us:</strong> 1-800-WAIT-4FUN</li>
+            <li><strong>Social Media:</strong>
+                <ul>
+                    <li>Instagram: @WaitopiaFun</li>
+                    <li>Twitter: @WaitopiaLaughs</li>
+                    <li>TikTok: @WaitopiaComedy</li>
+                </ul>
+            </li>
+        </ul>
+        <p>Or, just drop us a message below, and one of our team members will get back to you faster than you can say "loading screen!" 😎</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 WAITOPIA | All rights reserved</p>
+    </footer>
+
+    <canvas id="canvas"></canvas>
+    <div id="customCursor"></div>
+
+    <script>
+        // Remove loading screen after page load
+        window.onload = function() {
+            document.getElementById('loading-screen').style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+            }, 500);
+        };
+
+        // Toggle Light Effect
+        const toggleButton = document.getElementById('toggle-light');
+        const light = document.querySelector('.light');
+
+        let isLightEffectActive = true; // Track if the light effect is active
+
+        toggleButton.addEventListener('click', () => {
+            isLightEffectActive = !isLightEffectActive; // Toggle the state
+            if (isLightEffectActive) {
+                light.style.display = 'block'; // Show light effect
+            } else {
+                light.style.display = 'none'; // Hide light effect
+            }
+        });
+
+        // Move light effect with mouse only if it's active
+        window.addEventListener("mousemove", (e) => {
+            if (isLightEffectActive) {
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const mousex = e.clientX;
+                const mousey = e.clientY;
+
+                const x = (mousex / windowWidth) * 100;
+                const y = (mousey / windowHeight) * 100;
+
+                light.style.background = `radial-gradient(
+                    circle at ${x}% ${y}%,
+                    rgba(20, 20, 20, 0) 0%,
+                    rgba(20, 20, 20, 0.4) 5%,
+                    rgba(20, 20, 20, 0.6) 10%,
+                    rgba(20, 20, 20, 0.9) 20%,
+                    rgba(20, 20, 20, 1) 60%,
+                    rgba(20, 20, 20, 1) 100%
+                )`;
+            }
+        });
+
+        // Intersection Observer to trigger slide-down effect
+        const sections = document.querySelectorAll('section');
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Particle Animation Integration
+
+        const customCursor = document.getElementById("customCursor");
+        let mouseX = 0, mouseY = 0;
+        const hoverRadius = 64;
+
+        // Update custom cursor position and show it when the mouse moves.
+        document.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            customCursor.style.left = mouseX + "px";
+            customCursor.style.top = mouseY + "px";
+            if (customCursor.style.display === "none") {
+                customCursor.style.display = "block";
+            }
+            resetIdleTimer();
+        });
+
+        // Hide the custom cursor when the mouse leaves the viewport.
+        document.addEventListener("mouseout", (e) => {
+            if (!e.relatedTarget) {
+                customCursor.style.display = "none";
+            }
+        });
+        document.addEventListener("mouseover", () => {
+            customCursor.style.display = "block";
+        });
+        window.addEventListener("blur", () => {
+            customCursor.style.display = "none";
+        });
+        window.addEventListener("focus", () => {
+            customCursor.style.display = "block";
+        });
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+       // Global settings
+const easeFactor = 0.2; // Global easing factor
+let textOptions = ["Waitopia", "Design It", "More Fun", "Aesthetic", "🎵🎶"]; // Array of text options
+let currentTextIndex = 0;
+const density = 4; // Controls particle count
+let particles = [];
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.origX = x;
+        this.origY = y;
+        this.color = color;
+        this.size = 1;
+        this.vx = Math.random() * 4 - 2;
+        this.vy = Math.random() * 4 - 2;
+        this.isBroken = false;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        const dx = this.x - mouseX;
+        const dy = this.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < hoverRadius) {
+            this.isBroken = true;
+        }
+        const localEase = this.isBroken ? 0.01 : easeFactor;
+        this.x += (this.origX - this.x) * localEase;
+        this.y += (this.origY - this.y) * localEase;
+        if (this.isBroken && Math.abs(this.x - this.origX) < 1 && Math.abs(this.y - this.origY) < 1) {
+            this.isBroken = false;
+        }
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function initParticles() {
+    particles = [];
+    // Get font size from CSS variable.
+    const cssFontSize = getComputedStyle(document.documentElement)
+        .getPropertyValue('--text-font-size').trim();
+    let fontSize;
+    if (cssFontSize.endsWith('vw')) {
+        fontSize = window.innerWidth * (parseFloat(cssFontSize) / 100);
+    } else if (cssFontSize.endsWith('px')) {
+        fontSize = parseFloat(cssFontSize);
+    } else {
+        fontSize = canvas.width * 0.1;
+    }
+
+    // Get the current text option
+    const text = textOptions[currentTextIndex];
+
+    // Set the Outfit font for canvas text.
+    ctx.font = `${fontSize}px Outfit`;
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    const textWidth = ctx.measureText(text).width;
+    const imageData = ctx.getImageData(
+        0, // Start from the left side
+        0, // Start from the top
+        canvas.width, // Full width
+        canvas.height // Full height
+    );
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let y = 0; y < imageData.height; y += density) {
+        for (let x = 0; x < imageData.width; x += density) {
+            const index = (x + y * imageData.width) * 4;
+            const alpha = imageData.data[index + 3];
+            if (alpha > 128) {
+                const posX = x; // Use the x coordinate directly
+                const posY = y; // Use the y coordinate directly
+                particles.push(new Particle(posX, posY, "rgba(255, 255, 255, 0.8)"));
+            }
+        }
+    }
+}
+
+// Function to change the text and re-initialize particles
+function changeTextAndInit() {
+    currentTextIndex = (currentTextIndex + 1) % textOptions.length; // Cycle through text options
+    initParticles();
+}
+
+// Call changeTextAndInit every few seconds (e.g., 5 seconds)
+setInterval(changeTextAndInit, 5000);
+
+// Wait for fonts to load before initializing particles and starting the animation.
+document.fonts.ready.then(() => {
+    initParticles();
+    animate();
+});
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        let idleTimer;
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                particles.forEach(particle => {
+                    particle.isBroken = false;
+                });
+            }, 1000);
+        }
+        resetIdleTimer();
+
+        // Wait for fonts to load before initializing particles and starting the animation.
+        document.fonts.ready.then(() => {
+            initParticles();
+            animate();
+        });
+    </script>
+</body>
+</html>
