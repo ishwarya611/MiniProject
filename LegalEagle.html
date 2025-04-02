@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <title>LegalEagle</title>
+  <style>
+    /* Basic Styling */
+    body {
+      font-family: 'Playfair Display', serif;
+      background: #212121;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 4rem;
+      font-weight: bold;
+      color: #FAFAFA;
+      position: relative;
+    }
+
+    .typing {
+      display: inline-block;
+      overflow: hidden;
+      width: 0;
+      white-space: nowrap;
+      border-right: 4px solid #FAFAFA;
+      padding-right: 10px;
+      animation: typing 4s steps(12) 0.3s forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 8ch; /* Full text width */
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        border-color: transparent;
+      }
+    }
+
+    .dud {
+      color: #757575;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="typing"></div>
+  </div>
+
+  <script>
+    // Text Scramble Effect Class
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}—=+*^?#________';
+        this.update = this.update.bind(this);
+      }
+
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => this.resolve = resolve);
+        this.queue = [];
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 40);
+          const end = start + Math.floor(Math.random() * 40);
+          this.queue.push({ from, to, start, end });
+        }
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+
+      update() {
+        let output = '';
+        let complete = 0;
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.randomChar();
+              this.queue[i].char = char;
+            }
+            output += `<span class="dud">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        this.el.innerHTML = output;
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
+    // Auto-Typing Effect Setup
+    const typingEl = document.querySelector('.typing');
+    
+    // Set the text to "LegalLegal" with auto-typing first
+    typingEl.innerText = 'LegalLegal';
+
+    // Once typing finishes, start scrambling with "LegalEagle"
+    setTimeout(() => {
+      const fx = new TextScramble(typingEl);
+      fx.setText('LegalEagle');
+    }, 5000); // Wait until "LegalLegal" typing is done before starting scramble
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grad</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,800);
+
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 400px;
+            text-align: center;
+        }
+
+        .hat {
+            width: 100px;
+        }
+
+        .text {
+            height: 80px;
+            width: 280px;
+            margin-left: 40px;
+            margin-top: -80px;
+            overflow: hidden;
+        }
+
+        .text h1 {
+            text-transform: uppercase;
+            font-family: Open Sans;
+            font-weight: 300;
+            letter-spacing: 5px;
+            color: #aaa;
+            margin: 0 0 0 -200px;
+            opacity: 0;
+            animation: textMask 1.5s forwards;
+            animation-delay: 2s;
+        }
+
+        .text h1 span {
+            font-weight: 800;
+            color: #2d3e99;
+        }
+
+        .g {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            stroke-linecap: round;
+            animation: dash 1.5s linear forwards;
+        }
+
+        .first-dot {
+            opacity: 0;
+            animation: firstDot 0.2s forwards;
+            animation-delay: 1s;
+        }
+
+        .l {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 2.2s forwards;
+            animation-delay: 1.2s;
+        }
+
+        .dongle {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s linear forwards;
+            animation-delay: 1.5s;
+        }
+
+        .dongle-dot {
+            opacity: 0;
+            animation: firstDot 0.5s forwards;
+            animation-delay: 2s;
+        }
+
+        .dongle-dongle {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 2s forwards;
+            animation-delay: 2s;
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-linecap: auto;
+            }
+            1% {
+                stroke-linecap: round;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes firstDot {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes textMask {
+            to {
+                margin-left: 20px;
+                opacity: 1;
+                letter-spacing: 1px;
+            }
+        }
+
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="hat">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             x="0px" y="0px" viewBox="0 0 230.2 173.4" style="enable-background:new 0 0 230.2 173.4;" xml:space="preserve">
+            <style type="text/css">
+                .st0{fill:#2D3E99;}
+                .st1{fill:none;stroke:#2D3E99;stroke-width:13;stroke-linejoin:round;stroke-miterlimit:10;}
+            </style>
+            <circle class="st0 dongle-dot" cx="166.2" cy="145.8" r="9.8"/>
+            <circle class="st0 first-dot" cx="114.5" cy="45.1" r="9.8"/>
+            <polygon class="st1 dongle-dongle" points="166.2,145.8 155,166.9 176.7,166.9 "/>
+            <polyline class="st1 g" points="188.3,56.8 223.7,45.3 113.8,6.5 6.5,45 47,59.1 116.2,83.2 163.8,65.5 114.7,45.5"/>
+            <path class="st1 l" d="M47.9,62.5V122c0,0,5.2,23,84,23">
+                <animate attributeName="stroke-linecap" from="butt" to="round" dur="0.1s" begin="1s" fill="freeze"></animate>
+            </path>
+            <polyline class="st1 dongle" points="114.7,45.5 166.2,65.5 166.2,162.5 "/>
+        </svg>
+    </div>
+    <div class="text">
+        <p></p>
+        <h1>Grant<span>Wit</span></h1>
+    </div>
+</div>
+
+</body>
+</html>
